@@ -44,9 +44,9 @@ module "vault_consul" {
   }
 
   tags = {
-    OS                 = "ubuntu"
-    Region             = local.region
-    environment        = var.environment
+    OS          = "ubuntu"
+    Region      = local.region
+    environment = var.environment
   }
 
   use_default_vpc = false
@@ -72,13 +72,13 @@ module "openvpn-server" {
   # Join consul cluster
   cluster_tag_key = "consul-cluster"
   # TODO: make a output in consul to add here
-  cluster_tag_value = upper("${var.company}-demo-consul-${var.environment}")
+  cluster_tag_value = local.consul_cluster_tag_value
 
   tags = {
-    OS                 = "ubuntu"
-    Region             = local.region
-    application        = "OpenVPN"
-    environment        = var.environment
+    OS          = "ubuntu"
+    Region      = local.region
+    application = "OpenVPN"
+    environment = var.environment
   }
 
   # Filter tags
@@ -99,7 +99,7 @@ module "kafka_stack" {
   source = "./kafka_stack"
 
   company      = var.company
-  ami_id       = var.amis.metadata_publisher_ami # TODO: change
+  ami_id       = var.amis.kafka_ami
   ssh_key_name = var.ssh_key_name
   environment  = var.environment
 
@@ -107,10 +107,45 @@ module "kafka_stack" {
   consul_cluster_tag_value = local.consul_cluster_tag_value
 
   tags = {
-    OS                 = "ubuntu"
-    Region             = local.region
-    environment        = var.environment
+    OS          = "ubuntu"
+    Region      = local.region
+    environment = var.environment
   }
 
   vpc_name = var.vpc_name
+}
+
+
+module "postgres" {
+  source = "./database/mock"
+
+  instance_name = upper("${var.company}-demo-postgres-${var.environment}")
+  instance_type = "t3a.small"
+  ami_id        = var.amis.common_ami # TODO: Change
+  ssh_key_name  = var.ssh_key_name
+  environment   = var.environment
+
+  # Join consul cluster
+  consul_cluster_tag_key   = "consul-cluster"
+  consul_cluster_tag_value = local.consul_cluster_tag_value
+
+  tags = {
+    OS          = "ubuntu"
+    Region      = local.region
+    environment = var.environment
+  }
+
+  # Filter tags to find VPC and subnets
+  use_default_vpc = false
+  vpc_tags = {
+    Name = var.vpc_name
+  }
+  subnet_tags = {
+    # Type = "private"
+    Type = "public"
+  }
+
+  depends_on = [
+    module.vault_consul
+  ]
 }

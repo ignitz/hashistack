@@ -1,0 +1,16 @@
+hashistack = {
+  vpc_name = "PUBLIC-DEFAULT"
+  
+  amis = {
+    consul_vault_ami = "ami-0000..."
+    kafka_ami = "ami-0000..."
+    openvpn_ami = "ami-0000..."
+    common_ami = "ami-0000..."
+  }
+  
+  ssh_key_name = "development"
+}
+
+access_key="AKIA..."
+secret_key="qBRFA..."
+region="us-east-1"

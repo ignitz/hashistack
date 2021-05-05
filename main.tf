@@ -13,9 +13,9 @@ module "hashistack" {
   company     = "yuriniitsuma"
   environment = local.environment
 
-  vpc_name = var.hashitack.vpc_name
+  vpc_name = var.hashistack.vpc_name
 
-  ssh_key_name = var.hashitack.ssh_key_name
+  ssh_key_name = var.hashistack.ssh_key_name
 
-  amis = var.hashitack.amis
+  amis = var.hashistack.amis
 }

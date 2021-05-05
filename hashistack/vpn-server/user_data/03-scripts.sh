@@ -37,6 +37,8 @@ systemctl restart dnsmasq
 
 # Add DNS of OpenVPN server, expected that the ip address of VPN will be 10.8.0.1
 sed -i '/^push "dhcp-option DNS 8.8.8.8"/ipush "dhcp-option DNS 10.8.0.1"' /etc/openvpn/server.conf
+sed -i 's/^push "dhcp-option DNS 8.8.8.8"/;push "dhcp-option DNS 8.8.8.8"/g' /etc/openvpn/server.conf
+sed -i 's/^push "dhcp-option DNS 8.8.4.4"/;push "dhcp-option DNS 8.8.4.4"/g' /etc/openvpn/server.conf
 # Disable internet gateway
 sed -i 's/^push "redirect-gateway def1 bypass-dhcp"/;push "redirect-gateway def1 bypass-dhcp"/g' /etc/openvpn/server.conf
 # Add route to only VPC
