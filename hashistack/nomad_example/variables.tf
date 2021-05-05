@@ -1,0 +1,11 @@
+variable "ami_id" {}
+variable "instance_name" {}
+variable "instance_type" {}
+variable "environment" {}
+variable "ssh_key_name" {}
+variable "consul_cluster_tag_key" {}
+variable "consul_cluster_tag_value" {}
+variable "use_default_vpc" {}
+variable "vpc_tags" {}
+variable "subnet_tags" {}
+variable "tags" {}

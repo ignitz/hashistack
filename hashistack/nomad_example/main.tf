@@ -17,17 +17,13 @@ resource "aws_instance" "instance" {
       "\n",
       [
         file("${path.module}/user_data/01-init_instance.sh"),
-        "mkdir -pv /home/ubuntu/postgres",
-        "cat > /home/ubuntu/postgres/docker-compose.yaml << 'EOL'",
-        file("${path.module}/user_data/docker-compose.yaml"),
-        "EOL",
-        "docker-compose -f /home/ubuntu/postgres/docker-compose.yaml up -d",
-        templatefile("${path.module}/user_data/02-consul.sh", {
+        file("${path.module}/user_data/02-nomad.sh"),
+        templatefile("${path.module}/user_data/03-consul.sh", {
           consul_cluster_tag_key   = var.consul_cluster_tag_key,
           consul_cluster_tag_value = var.consul_cluster_tag_value
         }),
-        "sleep 30",
-        "docker exec postgres psql -U postgres -c 'CREATE DATABASE airflow'"
+        "sleep 10",
+        "(nomad agent -dev -bind $(curl http://169.254.169.254/latest/meta-data/local-ipv4) & sleep 10)"
       ]
     )
   )
@@ -37,7 +33,7 @@ resource "aws_instance" "instance" {
 
 resource "aws_security_group" "sg" {
   name        = var.instance_name
-  description = "Acesso ao Postgres"
+  description = "Acesso ao Nomad"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -49,11 +45,11 @@ resource "aws_security_group" "sg" {
   }
 
   ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = [data.aws_vpc.default.cidr_block]
-    description = "Postgres"
-    from_port   = 5432
-    protocol    = "tcp"
-    to_port     = 5432
+    description = "All traffic"
   }
 
   egress {

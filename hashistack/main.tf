@@ -149,3 +149,38 @@ module "postgres" {
     module.vault_consul
   ]
 }
+
+module "nomad" {
+  source = "./nomad_example"
+
+  instance_name = upper("${var.company}-demo-nomad-${var.environment}")
+  instance_type = "t3a.large"
+  ami_id        = var.amis.common_ami # TODO: Change
+  ssh_key_name  = var.ssh_key_name
+  environment   = var.environment
+
+  # Join consul cluster
+  consul_cluster_tag_key   = "consul-cluster"
+  consul_cluster_tag_value = local.consul_cluster_tag_value
+
+  tags = {
+    application = "nomad"
+    OS          = "ubuntu"
+    Region      = local.region
+    environment = var.environment
+  }
+
+  # Filter tags to find VPC and subnets
+  use_default_vpc = false
+  vpc_tags = {
+    Name = var.vpc_name
+  }
+  subnet_tags = {
+    # Type = "private"
+    Type = "public"
+  }
+
+  depends_on = [
+    module.vault_consul
+  ]
+}

@@ -40,3 +40,8 @@ terraform.rc
 # Dev stuffs
 .vscode/
 terraform.tfvars
+
+# Waypoint
+.waypoint/
+*.db.lock
+data.db
