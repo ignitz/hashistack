@@ -164,3 +164,12 @@ nomad job run redis.nomad
 ```
 
 Olhar no consul o serviço do redis catalogado
+
+## Waypoint
+
+```shell
+cd waypoint/nodejs
+export NOMAD_ADDR='http://nomad.service.consul:4646'
+waypoint init
+waypoint install -platform=nomad -nomad-dc=dc1 -accept-tos
+```
