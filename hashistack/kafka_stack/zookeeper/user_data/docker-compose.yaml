@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  # https://hub.docker.com/_/zookeeper
+  zookeeper:
+    image: zookeeper
+    container_name: zookeeper${ZOO_MY_ID}
+    restart: always
+    hostname: zookeeper${ZOO_MY_ID}
+    network_mode: host
+    environment:
+      ZOO_MY_ID: ${ZOO_MY_ID}
+      ZOO_SERVERS: server.1=zookeeper1.service.consul:2888:3888;2181 server.2=zookeeper2.service.consul:2888:3888;2181 server.3=zookeeper3.service.consul:2888:3888;2181
+      ZOO_ADMINSERVER_ENABLED: "true"
+      ZOO_4LW_COMMANDS_WHITELIST: "*"
+      ZOOKEEPER_TICK_TIME: "2000"
+      

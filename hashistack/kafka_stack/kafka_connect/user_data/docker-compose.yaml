@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+  dbzui-connect:
+    container_name: dbzui-connect
+    image: debezium/connect:1.5
+    ports:
+      - "8083:8083"
+    environment:
+      # Change bootstrap servers to variable
+      - BOOTSTRAP_SERVERS=kafka1.service.consul:9092,kafka2.service.consul:9092,kafka3.service.consul:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+      - KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
+      - VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
+      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry.service.consul:8081
+      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry.service.consul:8081
+  dbzui-backend:
+    container_name: dbzui-backend
+    image: ignitz/debezium-ui
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CONNECT_URI: http://dbzui-connect:8083
+  # To test purpose
+  # postgres:
+  #   image: debezium/example-postgres:1.5
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres

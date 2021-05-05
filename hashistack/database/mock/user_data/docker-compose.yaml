@@ -1,0 +1,26 @@
+version: "3"
+
+# This database will be used to test purpose. Will be destroyed anytime.
+# Do not store significant data here
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      # Change password after deploy   
+      POSTGRES_PASSWORD: postgres 
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres-db-volume:

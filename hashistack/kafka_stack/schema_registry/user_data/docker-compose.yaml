@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  schema-registry:
+    image: confluentinc/cp-schema-registry:6.1.1
+    hostname: schema-registry
+    container_name: schema-registry
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper1.service.consul:2181,zookeeper2.service.consul:2181,zookeeper3.service.consul:2181/kafka"

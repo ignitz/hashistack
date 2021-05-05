@@ -1,0 +1,27 @@
+version: "3.1"
+
+services:
+  broker:
+    # https://hub.docker.com/r/confluentinc/cp-kafka
+    image: confluentinc/cp-kafka:6.1.1
+    hostname: broker
+    container_name: broker
+    network_mode: host
+    volumes:
+      - /disk/data/kafka:/var/lib/kafka/data
+      - /var/ssl/private:/var/ssl/private
+    # ports:
+    #   - "9092:9092"
+    #   - "9101:9101"
+    # parameters documentation
+    # https://docs.confluent.io/platform/current/installation/docker/config-reference.html
+    # For the Kafka (cp-kafka) image, convert the kafka.properties file variables as below and use them as environment variables:
+    #   Prefix with KAFKA_.
+    #   Convert to upper-case.
+    #   Replace a period (.) with a single underscore (_).
+    #   Replace a dash (-) with double underscores (__).
+    #   Replace an underscore (_) with triple underscores (___).
+    environment:
+      KAFKA_BROKER_ID: ${KAFKA_ID}
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1.service.consul:2181,zookeeper2.service.consul:2181,zookeeper3.service.consul:2181/kafka"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka${KAFKA_ID}.service.consul:9092
