@@ -1,14 +1,17 @@
-project = "example-nodejs"
+project = "example-python"
 
-app "example-nodejs" {
+app "example-python" {
+  labels = {
+    "service" = "example-python",
+    "env"     = "dev"
+  }
 
   build {
-    use "pack" {}
+    use "docker" {}
     registry {
       use "docker" {
-        image = "nodejs-example"
-        tag   = "1"
-        local = true
+        image = "ignitz/example-python"
+        tag   = "latest"
       }
     }
   }
@@ -19,7 +22,8 @@ app "example-nodejs" {
       // show they are configurable
       datacenter = "dc1"
       namespace  = "default"
+      service_port = 8080
+      replicas = 1
     }
   }
-
 }

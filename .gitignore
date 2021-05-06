@@ -45,3 +45,4 @@ terraform.tfvars
 .waypoint/
 *.db.lock
 data.db
+waypoint-server-snapshot*
